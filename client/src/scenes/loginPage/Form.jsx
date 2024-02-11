@@ -7,7 +7,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import EditOutlined from "@mui/icons-material/Edit";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,6 @@ import { setLogin } from "state";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
 
-// Validation schema for registration form
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
   lastName: yup.string().required("required"),
@@ -27,13 +26,11 @@ const registerSchema = yup.object().shape({
   picture: yup.string().required("required"),
 });
 
-// Validation schema for login form
 const loginSchema = yup.object().shape({
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
 });
 
-// Initial values for registration form
 const initialValuesRegister = {
   firstName: "",
   lastName: "",
@@ -44,7 +41,6 @@ const initialValuesRegister = {
   picture: "",
 };
 
-// Initial values for login form
 const initialValuesLogin = {
   email: "",
   password: "",
@@ -55,57 +51,71 @@ const Form = () => {
   const { palette } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isNonMobile = useMediaQuery("(min-width: 600px)");
+  const isNonMobile = useMediaQuery("(min-width:600px)");
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
+  const [registrationError, setRegistrationError] = useState('');
+  const [loginError, setLoginError] = useState('');
 
-  // Function to handle registration
   const register = async (values, onSubmitProps) => {
-    // this allows us to send form info with image
-    const formData = new FormData();
-    for (let value in values) {
-      formData.append(value, values[value]);
-    }
-    formData.append("picturePath", values.picture.name);
-
-    const savedUserResponse = await fetch(
-      "http://localhost:3001/auth/register",
-      {
-        method: "POST",
-        body: formData,
+    try {
+      const formData = new FormData();
+      for (let value in values) {
+        formData.append(value, values[value]);
       }
-    );
-
-    const savedUser = await savedUserResponse.json();
-    onSubmitProps.resetForm();
-
-    if (savedUser) {
-      setPageType("login");
-    }
-  };
-
-  // Function to handle login
-  const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
-
-    const loggedIn = await loggedInResponse.json();
-    onSubmitProps.resetForm();
-    if (loggedIn) {
-      dispatch(
-        setLogin({
-          user: loggedIn.user,
-          token: loggedIn.token,
-        })
+      formData.append("picturePath", values.picture.name);
+  
+      const savedUserResponse = await fetch(
+        "http://localhost:3001/auth/register",
+        {
+          method: "POST",
+          body: formData,
+        }
       );
-      navigate("/home");
+      
+      if (savedUserResponse.status === 500) {
+        throw new Error('Email is already in use. Please choose another email.');
+      }
+  
+      const savedUser = await savedUserResponse.json();
+      onSubmitProps.resetForm();
+  
+      if (savedUser) {
+        setPageType("login");
+      }
+    } catch (error) {
+      setRegistrationError(error.message || 'An unexpected error occurred. Please try again.');
+    }
+  };  
+
+  const login = async (values, onSubmitProps) => {
+    try {
+      const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+  
+      if (loggedInResponse.status === 400) {
+        throw new Error('Invalid email or password. Please try again.');
+      }
+  
+      const loggedIn = await loggedInResponse.json();
+      onSubmitProps.resetForm();
+      if (loggedIn) {
+        dispatch(
+          setLogin({
+            user: loggedIn.user,
+            token: loggedIn.token,
+          })
+        );
+        navigate("/home");
+      }
+    } catch (error) {
+      setLoginError(error.message || 'An unexpected error occurred. Please try again.');
     }
   };
-
-  // Function to handle form submission
+  
   const handleFormSubmit = async (values, onSubmitProps) => {
     if (isLogin) await login(values, onSubmitProps);
     if (isRegister) await register(values, onSubmitProps);
@@ -131,7 +141,7 @@ const Form = () => {
           <Box
             display="grid"
             gap="30px"
-            gridTemplateColumns="repeat(4,minmax(0, 1fr))"
+            gridTemplateColumns="repeat(4, minmax(0, 1fr))"
             sx={{
               "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
             }}
@@ -144,7 +154,9 @@ const Form = () => {
                   onChange={handleChange}
                   value={values.firstName}
                   name="firstName"
-                  error={Boolean(touched.firstName) && Boolean(errors.firstName)}
+                  error={
+                    Boolean(touched.firstName) && Boolean(errors.firstName)
+                  }
                   helperText={touched.firstName && errors.firstName}
                   sx={{ gridColumn: "span 2" }}
                 />
@@ -174,9 +186,11 @@ const Form = () => {
                   onChange={handleChange}
                   value={values.occupation}
                   name="occupation"
-                  error={Boolean(touched.occupation) && Boolean(errors.occupation)}
+                  error={
+                    Boolean(touched.occupation) && Boolean(errors.occupation)
+                  }
                   helperText={touched.occupation && errors.occupation}
-                  sx={{ gridColumn: "span " }}
+                  sx={{ gridColumn: "span 4" }}
                 />
                 <Box
                   gridColumn="span 4"
@@ -185,7 +199,7 @@ const Form = () => {
                   p="1rem"
                 >
                   <Dropzone
-                    acceptedFiles=".jpg, .jpeg, .png"
+                    acceptedFiles=".jpg,.jpeg,.png"
                     multiple={false}
                     onDrop={(acceptedFiles) =>
                       setFieldValue("picture", acceptedFiles[0])
@@ -196,7 +210,7 @@ const Form = () => {
                         {...getRootProps()}
                         border={`2px dashed ${palette.primary.main}`}
                         p="1rem"
-                        sx={{ "&: hover": { cursor: "pointer" } }}
+                        sx={{ "&:hover": { cursor: "pointer" } }}
                       >
                         <input {...getInputProps()} />
                         {!values.picture ? (
@@ -204,7 +218,7 @@ const Form = () => {
                         ) : (
                           <FlexBetween>
                             <Typography>{values.picture.name}</Typography>
-                            <EditOutlined />
+                            <EditOutlinedIcon />
                           </FlexBetween>
                         )}
                       </Box>
@@ -237,6 +251,9 @@ const Form = () => {
             />
           </Box>
 
+          {registrationError && <Typography color="error">{registrationError}</Typography>}
+
+          {loginError && <Typography color="error" >{loginError}</Typography>}
           {/* BUTTONS */}
           <Box>
             <Button
@@ -252,6 +269,7 @@ const Form = () => {
             >
               {isLogin ? "LOGIN" : "REGISTER"}
             </Button>
+
             <Typography
               onClick={() => {
                 setPageType(isLogin ? "register" : "login");
@@ -260,7 +278,7 @@ const Form = () => {
               sx={{
                 textDecoration: "underline",
                 color: palette.primary.main,
-                "&: hover": {
+                "&:hover": {
                   cursor: "pointer",
                   color: palette.primary.light,
                 },
