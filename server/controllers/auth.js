@@ -20,6 +20,13 @@ export const register = async (req, res) => {
     // Generate a salt and hash the password using bcrypt
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
+
+    // Check if the user with the given email already exists
+    let user = await User.findOne({ email: req.body.email });
+
+    if (user) {
+        return res.status(500).send("User with given email already exists!");
+      }
     
     // Create a new User instance with hashed password and other details
         const newUser = new User({
@@ -42,6 +49,7 @@ export const register = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 }
+
 /* LOGGING IN */
 export const login = async (req, res) => {
     try {

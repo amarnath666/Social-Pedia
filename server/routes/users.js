@@ -14,7 +14,7 @@ const router = express.Router();
 router.get("/:id", verifyToken, getUser);
 
 // GET request to retrieve user's friends by ID
-router.get("/id/friends", verifyToken, getUserFriends);
+router.get("/:id/friends", verifyToken, getUserFriends);
 
 /* UPDATE */
 

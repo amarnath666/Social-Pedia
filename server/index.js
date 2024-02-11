@@ -62,6 +62,7 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
+    console.log("MongoDB connected successfully");
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
 
     // ADD DATA ONE TIME 
