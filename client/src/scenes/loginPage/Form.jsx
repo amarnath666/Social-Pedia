@@ -90,31 +90,33 @@ const Form = () => {
 
   const login = async (values, onSubmitProps) => {
     try {
-      const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-  
-      if (loggedInResponse.status === 400) {
-        throw new Error('Invalid email or password. Please try again.');
-      }
-  
-      const loggedIn = await loggedInResponse.json();
-      onSubmitProps.resetForm();
-      if (loggedIn) {
-        dispatch(
-          setLogin({
-            user: loggedIn.user,
-            token: loggedIn.token,
-          })
-        );
-        navigate("/home");
-      }
+        const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(values),
+        });
+
+        if (loggedInResponse.status === 400) {
+            throw new Error('Invalid email or password. Please try again.');
+        }
+
+        const loggedIn = await loggedInResponse.json();
+        onSubmitProps.resetForm();
+        if (loggedIn) {
+            dispatch(
+                setLogin({
+                    user: loggedIn.user,
+                    token: loggedIn.token,
+                })
+            );
+            console.log('Token:', loggedIn.token); // Log the token
+            navigate("/home");
+        }
     } catch (error) {
-      setLoginError(error.message || 'An unexpected error occurred. Please try again.');
+        setLoginError(error.message || 'An unexpected error occurred. Please try again.');
     }
-  };
+}
+
   
   const handleFormSubmit = async (values, onSubmitProps) => {
     if (isLogin) await login(values, onSubmitProps);

@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Navigate, Routes, Route} from "react-router-dom";
 import HomePage from "./scenes/homePage/Index.jsx";
 import LoginPage from "./scenes/loginPage/Index.jsx";
@@ -8,6 +7,7 @@ import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme} from "@mui/material/styles";
 import { themeSettings } from "./theme.js";
+import Messages from "scenes/messages/index.js";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -26,7 +26,8 @@ function App() {
               element={isAuth ? <HomePage /> : <Navigate to="/"/>} />
           <Route 
               path="/profile/:userId"   
-              element={isAuth ? <ProfilePage />  : <Navigate to="/" />} />        
+              element={isAuth ? <ProfilePage />  : <Navigate to="/" />} />
+              <Route path="messages" element={<Messages />} />      
         </Routes>
         </ThemeProvider>
       </BrowserRouter>

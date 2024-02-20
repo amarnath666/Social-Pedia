@@ -154,13 +154,17 @@ import {
             </FlexBetween>
           )}
   
-          <Button
+            <Button
             disabled={!post}
             onClick={handlePost}
             sx={{
               color: palette.background.alt,
               backgroundColor: palette.primary.main,
               borderRadius: "3rem",
+              "&:disabled": {
+                color: palette.background.alt,
+              backgroundColor: palette.primary.main,
+              },
             }}
           >
             POST
