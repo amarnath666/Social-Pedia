@@ -18,14 +18,14 @@ export const fetchUsersForSidebar = createAsyncThunk(
 
 export const fetchSendMessage = createAsyncThunk(
     "messages/fetchSendMessage",
-    async(_, thunkAPI) => {
+    async({ id, message }, thunkAPI) => {
         try {
             const response = await fetch(`http://localhost:3001/messages/send/${id}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringfy({ message })
+                body: JSON.stringify({ message })
             });
 
             const data = await response.json();
@@ -38,7 +38,7 @@ export const fetchSendMessage = createAsyncThunk(
 
 export const fetchGetMessages = createAsyncThunk(
     "messages/fetchGetMessages", 
-    async(_, thunkAPI) => {
+    async(id, thunkAPI) => {
         try {
             const response = await fetch(`http://localhost:3001/messages/${id}`)
 
@@ -59,45 +59,45 @@ const initialState =  {
 }
  
 const messageSlice = createSlice({
-    name: "users",
+    name: "messages",
     initialState,
     reducers: {},
-    extraReducers: {
-        [fetchUsersForSidebar.pending]: (state) => {
-            state.status = "loading";
-        },
-        [fetchUsersForSidebar.fulfilled]: (state, action) => {
-            state.status = "succeeded";
-            state.list = action.payload;
-        },
-        [fetchUsersForSidebar.rejected]: (state, action) => {
-            state.status = "failed";
-            state.error = action.payload;
-        },
-        [fetchSendMessage.pending]: (state) => {
-            state.status = "loading";
-        },
-        [fetchSendMessage.fulfilled]: (state, action) => {
-            state.status = "succeded";
-            state.message = action.payload;
-        },
-        [fetchUsersForSidebar.rejected]: (state, action) => {
-            state.status = "failed";
-            state.error = action.payload;
-        },
-        [fetchGetMessages.pending]: (state) => {
-            state.status = "loading";
-        },
-        [fetchGetMessages.fulfilled]: (state, action) => {
-            state.status = "succeeded";
-            state.messages = action.payload;
-        },
-        [fetchGetMessages.rejected]: (state, action) => {
-            state.status = "failed";
-            state.error = action.payload;
-        },
+    extraReducers(builder) {
+        builder
+            .addCase(fetchUsersForSidebar.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(fetchUsersForSidebar.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.list = action.payload;
+            })
+            .addCase(fetchUsersForSidebar.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            })
+            .addCase(fetchSendMessage.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(fetchSendMessage.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.message = action.payload;
+            })
+            .addCase(fetchSendMessage.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            })
+            .addCase(fetchGetMessages.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(fetchGetMessages.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.messages = action.payload;
+            })
+            .addCase(fetchGetMessages.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            });
     },
 });
 
 export default messageSlice.reducer;
-

@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { fetchSendMessage } from './messageSlice';
+import { fetchSendMessage } from 'state/messageSlice';
 
 const SendMessageForm = ({ receiverId }) => {
     const dispatch = useDispatch();
-    const [message, setMessage] = state("");
+    const [message, setMessage] = useState("");
 
     const handleMessageSubmit = (e) => {
         e.preventDefault();
-        dispatch(fetchSendMessage({ receiverId, message }));
+        dispatch(fetchSendMessage({ id: receiverId, message }));
         setMessage(""); // Clear the input field after sending the message
     }
 
     return (
-            <Form onSubmit={handleMessageSubmit}>
-                <textarea value={message} onChange={(e) => setMessage(e.target.value)} />
-                <button type="submit">Send</button>
-            </Form>
+        <form onSubmit={handleMessageSubmit}>
+            <textarea value={message} onChange={(e) => setMessage(e.target.value)} />
+            <button type="submit">Send</button>
+        </form>
     );
 }
 

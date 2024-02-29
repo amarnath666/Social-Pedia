@@ -53,74 +53,64 @@ const Form = () => {
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const isLogin = pageType === "login";
-  const isRegister = pageType === "register";
-  const [registrationError, setRegistrationError] = useState('');
-  const [loginError, setLoginError] = useState('');
+  const [error, setError] = useState('');
 
-  const register = async (values, onSubmitProps) => {
+  const handleFormSubmit = async (values, onSubmitProps) => {
     try {
-      const formData = new FormData();
-      for (let value in values) {
-        formData.append(value, values[value]);
-      }
-      formData.append("picturePath", values.picture.name);
-  
-      const savedUserResponse = await fetch(
-        "http://localhost:3001/auth/register",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      
-      if (savedUserResponse.status === 500) {
-        throw new Error('Email is already in use. Please choose another email.');
-      }
-  
-      const savedUser = await savedUserResponse.json();
-      onSubmitProps.resetForm();
-  
-      if (savedUser) {
-        setPageType("login");
-      }
-    } catch (error) {
-      setRegistrationError(error.message || 'An unexpected error occurred. Please try again.');
-    }
-  };  
-
-  const login = async (values, onSubmitProps) => {
-    try {
+      if (isLogin) {
+        // Login logic
         const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(values),
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(values),
         });
 
-        if (loggedInResponse.status === 400) {
-            throw new Error('Invalid email or password. Please try again.');
+        if (loggedInResponse.status === 401) {
+          throw new Error('Invalid email or password. Please try again.');
         }
 
         const loggedIn = await loggedInResponse.json();
         onSubmitProps.resetForm();
         if (loggedIn) {
-            dispatch(
-                setLogin({
-                    user: loggedIn.user,
-                    token: loggedIn.token,
-                })
-            );
-            console.log('Token:', loggedIn.token); // Log the token
-            navigate("/home");
+          dispatch(
+            setLogin({
+              user: loggedIn.user,
+              token: loggedIn.token,
+            })
+          );
+          console.log('Token:', loggedIn.token); // Log the token
+          navigate("/home");
         }
+      } else {
+        // Registration logic
+        const formData = new FormData();
+        for (let value in values) {
+          formData.append(value, values[value]);
+        }
+        formData.append("picturePath", values.picture.name);
+    
+        const savedUserResponse = await fetch(
+          "http://localhost:3001/auth/register",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+        
+        if (savedUserResponse.status === 500) {
+          throw new Error('Email is already in use. Please choose another email.');
+        }
+    
+        const savedUser = await savedUserResponse.json();
+        onSubmitProps.resetForm();
+    
+        if (savedUser) {
+          setPageType("login");
+        }
+      }
     } catch (error) {
-        setLoginError(error.message || 'An unexpected error occurred. Please try again.');
+      setError(error.message || 'An unexpected error occurred. Please try again.');
     }
-}
-
-  
-  const handleFormSubmit = async (values, onSubmitProps) => {
-    if (isLogin) await login(values, onSubmitProps);
-    if (isRegister) await register(values, onSubmitProps);
   };
 
   return (
@@ -148,7 +138,7 @@ const Form = () => {
               "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
             }}
           >
-            {isRegister && (
+            {isLogin ? null : (
               <>
                 <TextField
                   label="First Name"
@@ -156,9 +146,7 @@ const Form = () => {
                   onChange={handleChange}
                   value={values.firstName}
                   name="firstName"
-                  error={
-                    Boolean(touched.firstName) && Boolean(errors.firstName)
-                  }
+                  error={Boolean(touched.firstName) && Boolean(errors.firstName)}
                   helperText={touched.firstName && errors.firstName}
                   sx={{ gridColumn: "span 2" }}
                 />
@@ -188,9 +176,7 @@ const Form = () => {
                   onChange={handleChange}
                   value={values.occupation}
                   name="occupation"
-                  error={
-                    Boolean(touched.occupation) && Boolean(errors.occupation)
-                  }
+                  error={Boolean(touched.occupation) && Boolean(errors.occupation)}
                   helperText={touched.occupation && errors.occupation}
                   sx={{ gridColumn: "span 4" }}
                 />
@@ -253,9 +239,8 @@ const Form = () => {
             />
           </Box>
 
-          {registrationError && <Typography color="error">{registrationError}</Typography>}
+          {error && <Typography color="error">{error}</Typography>}
 
-          {loginError && <Typography color="error" >{loginError}</Typography>}
           {/* BUTTONS */}
           <Box>
             <Button
@@ -276,6 +261,7 @@ const Form = () => {
               onClick={() => {
                 setPageType(isLogin ? "register" : "login");
                 resetForm();
+                setError(''); // Clear error message
               }}
               sx={{
                 textDecoration: "underline",

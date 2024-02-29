@@ -57,11 +57,11 @@ export const login = async (req, res) => {
 
         // Find a user with the provided email in the database
         const user = await User.findOne({ email: email})
-        if(!user) return res.status(400).json({msg: "User does not exist. "});
+        if(!user) return res.status(401).json({msg: 'Invalid email or password'});
 
          // Compare the provided password with the hashed password stored in the database
         const isMatch = await bcrypt.compare(password, user.password);
-        if(!isMatch) return res.status(400).json({msg: "Invalid credentials. "});
+        if(!isMatch)  return res.status(401).json({ error: 'Invalid email or password' });
 
         // If the email and password are valid, generate a JSON Web Token (JWT)
         const token = jwt.sign({ id: user._id}, process.env.JWT_SECRET);

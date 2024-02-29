@@ -5,7 +5,7 @@ import { List, ListItem, ListItemText, ListItemIcon, Divider, Typography } from 
 import { AccountCircle } from '@mui/icons-material';
 
 function Sidebar () {
-    const users = useSelector((state) => state.users.list);
+    const users = useSelector((state) => state.messages.list);
     const dispatch = useDispatch();
 
     useEffect(() => {
