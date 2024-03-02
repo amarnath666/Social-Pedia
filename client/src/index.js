@@ -1,34 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
 import authReducer from "./state/authSlice";
-import messageReducer from "./state/messageSlice";
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { Provider } from 'react-redux';
+import { configureStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
 import {
-  persistStore, 
+  persistStore,
   persistReducer,
   FLUSH,
   REHYDRATE,
   PAUSE,
   PERSIST,
   PURGE,
-  REGISTER
+  REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { PersistGate } from 'redux-persist/integration/react';
+import { PersistGate } from "redux-persist/integration/react";
 
-// Combine authReducer & messageReducer
-const rootReducer = combineReducers({
-  auth: authReducer,
-  messages: messageReducer
-})
-
-const persistConfig = { key: "root", storage, version: 1};
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistConfig = { key: "root", storage, version: 1 };
+const persistedReducer = persistReducer(persistConfig, authReducer);
 const store = configureStore({
-  reducer: persistedReducer, 
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -37,7 +30,7 @@ const store = configureStore({
     }),
 });
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>

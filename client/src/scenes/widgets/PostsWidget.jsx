@@ -2,11 +2,12 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "state/authSlice";
 import PostWidget from "./PostWidget";
+import { selectToken } from "state/authSlice";
 
 const PostsWidget = ({ userId, isProfile = false }) => {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.posts);
-  const token = useSelector((state) => state.token);
+  const token = useSelector(selectToken);
 
   const getPosts = async () => {
     const response = await fetch("http://localhost:3001/posts", {

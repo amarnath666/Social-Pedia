@@ -11,12 +11,13 @@ import WidgetWrapper from "components/WidgetWrapper";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { selectToken } from "state/authSlice";
 
 const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
   const { palette } = useTheme();
   const navigate = useNavigate();
-  const token = useSelector((state) => state.token);
+  const token = useSelector(selectToken);
   const dark = palette.neutral.dark;
   const medium = palette.neutral.medium;
   const main = palette.neutral.main;

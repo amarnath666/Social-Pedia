@@ -7,8 +7,7 @@ import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme} from "@mui/material/styles";
 import { themeSettings } from "./theme.js";
-import ChatWindow from "scenes/chatWindow/Messages.jsx";
-import ChatApp from "scenes/chatWindow/index.jsx";
+import ChatWindow from "scenes/chatWindow/ChatWindow.jsx";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -30,7 +29,7 @@ function App() {
               element={isAuth ? <ProfilePage />  : <Navigate to="/" />} />
           <Route
               path="/messages"
-              element={isAuth ? <ChatApp /> : <Navigate to="/" />} />
+              element={isAuth ? <ChatWindow /> : <Navigate to="/" />} />
         </Routes>
         </ThemeProvider>
       </BrowserRouter>

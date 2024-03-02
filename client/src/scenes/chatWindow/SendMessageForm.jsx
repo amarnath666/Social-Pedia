@@ -1,15 +1,30 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchSendMessage } from 'state/messageSlice';
+import { selectToken } from 'state/authSlice';
+import { useSelector } from 'react-redux';
 
 const SendMessageForm = ({ receiverId }) => {
-    const dispatch = useDispatch();
     const [message, setMessage] = useState("");
+    const token = useSelector(selectToken);
 
-    const handleMessageSubmit = (e) => {
+    const handleMessageSubmit = async (e) => {
         e.preventDefault();
-        dispatch(fetchSendMessage({ id: receiverId, message }));
-        setMessage(""); // Clear the input field after sending the message
+        try {
+            const response = await fetch(`http://localhost:3001/messages/send/${receiverId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ message })
+            });
+            if (!response.ok) {
+                throw new Error("Failed to send message");
+            }
+            console.log("sendMessages", response)
+            setMessage(""); // Clear the input field after sending the message
+        } catch (error) {
+            console.error("Error sending message:", error);
+        }
     }
 
     return (

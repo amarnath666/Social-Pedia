@@ -1,20 +1,46 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, List, ListItem, ListItemText } from '@mui/material';
-import { fetchGetMessages } from 'state/messageSlice';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { selectToken } from 'state/authSlice';
 
-const ChatWindow = ({ selectedUser }) => {
-    const dispatch = useDispatch();
-    const messages = useSelector((state) => state.messages.messages);
+const Messages = ({ selectedUser }) => {
+    const [messages, setMessages] = useState([]);
+    const token = useSelector(selectToken);
 
     useEffect(() => {
-        dispatch(fetchGetMessages(selectedUser.id));
-    }, [dispatch, selectedUser.id]);
+        const fetchMessages = async () => {
+            try {
+                if (!selectedUser) {
+                    return; 
+                }
+    
+                const response = await fetch(`http://localhost:3001/messages/${selectedUser.id}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch messages");
+                }
+                const data = await response.json();
+                console.log("messages", data);
+                setMessages(data);
+            } catch (error) {
+                console.error("Error fetching messages:", error);
+            }
+        };
+    
+        fetchMessages();
+    
+    }, [selectedUser, token]); 
+    
 
     return (
         <div style={{ flexGrow: 1, overflowY: "auto", padding: 16}}>
             <Typography variant="h6" gutterBottom>
-                Chat with {selectedUser.name}
+                {/* Chat with {selectedUser.firstName} */}
             </Typography>
             <List>
                 {messages.map(message => (
@@ -27,4 +53,5 @@ const ChatWindow = ({ selectedUser }) => {
     );
 }
 
-export default ChatWindow;
+export default Messages;
+
