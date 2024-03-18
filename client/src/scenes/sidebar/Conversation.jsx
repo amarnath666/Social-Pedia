@@ -1,11 +1,12 @@
 import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
+import { Box } from '@mui/material';
 
 const Conversation = () => {
   return (
     <>
-      <div
+      <Box
         sx={{
           display: 'flex',
           gap: 2,
@@ -29,12 +30,12 @@ const Conversation = () => {
           src="https://cdn0.iconfinder.com/data/icons/communication-line-10/24/account_profile_user_contact_person_avatar_placeholder-512.png"
           alt="user avatar"
         />
-        <div sx={{ flex: 1 }}>
+        <Box sx={{ flex: 1 }}>
           <div sx={{ display: 'flex', gap: 3 }}>
             <p sx={{ fontWeight: 'bold', color: 'gray.200' }}>John Doe</p>
           </div>
-        </div>
-      </div>
+        </Box>
+      </Box>
       <Divider sx={{ margin: 0, padding: 0, height: 1 }} />
     </>
   );

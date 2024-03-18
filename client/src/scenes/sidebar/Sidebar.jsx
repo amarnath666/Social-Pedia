@@ -14,7 +14,7 @@ const Sidebar = () => {
       }}
     >
       <SearchInput />
-      <div
+      <Box
         sx={{
           height: 1,
           backgroundColor: '#d4d4d4',

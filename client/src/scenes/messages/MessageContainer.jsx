@@ -1,6 +1,7 @@
 import Navbar from 'scenes/navBar/Index';
 import Sidebar from 'scenes/sidebar/Sidebar';
-import Messages from 'scenes/messages/Messages'; // Updated import
+import Messages from 'scenes/messages/Messages';
+import { Box } from '@mui/material';
 
 const MessageContainer = () => {
   const noChatSelected = true;

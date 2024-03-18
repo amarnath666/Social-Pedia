@@ -1,4 +1,5 @@
 import { Avatar } from '@mui/material';
+import Box from '@mui/material';
 
 const Message = () => {
   return (

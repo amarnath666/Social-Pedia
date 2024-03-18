@@ -1,10 +1,23 @@
 import { TextField, IconButton } from '@mui/material';
 import { BsSend } from 'react-icons/bs';
+import { useState } from 'react';
+import useSendMessage from 'scenes/hooks/useSendMessage';
+import { Box } from '@mui/material';
 
 const MessageInput = () => {
+  const [message, setMessage] = useState("");
+  const { loading, sendMessage } = useSendMessage();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if(!message) return;
+    await sendMessage(message);
+    setMessage("");
+  }
+
   return (
     <form sx={{ px: 4, my: 3 }}>
-      <div sx={{ position: 'relative' }}>
+      <Box sx={{ position: 'relative' }}>
         <TextField
           type="text"
           variant="outlined"
@@ -23,6 +36,7 @@ const MessageInput = () => {
             },
           }}
           placeholder="Send a message"
+          onChange={(e) => setMessage(e.target.value)}
         />
         <IconButton
           type="submit"
@@ -30,7 +44,7 @@ const MessageInput = () => {
         >
           <BsSend />
         </IconButton>
-      </div>
+      </Box>
     </form>
   );
 };

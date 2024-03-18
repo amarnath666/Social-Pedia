@@ -1,7 +1,8 @@
 import Navbar from 'scenes/navBar/Index';
 import Sidebar from 'scenes/sidebar/Sidebar';
 import MessageContainer from 'scenes/messages/MessageContainer';
-import { Box } from '@mui/system';
+import { Box } from '@mui/material';
+import MessageInput from 'scenes/messages/MessageInput';
 
 const ChatApp = () => {
   return (
@@ -21,6 +22,7 @@ const ChatApp = () => {
       >
         <Sidebar  />
         <MessageContainer /> 
+        <MessageInput />
       </Box>
     </>
   );

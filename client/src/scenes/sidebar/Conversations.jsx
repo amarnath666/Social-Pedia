@@ -1,8 +1,9 @@
 import Conversation from './Conversation';
+import { Box } from '@mui/material';
 
 const Conversations = () => {
   return (
-    <div
+    <Box
       sx={{
         py: 2,
         display: 'flex',
@@ -17,7 +18,7 @@ const Conversations = () => {
       <Conversation />
       <Conversation />
       <Conversation />
-    </div>
+    </Box>
   );
 };
 

@@ -1,4 +1,5 @@
 import Message from './Message';
+import { Box } from '@mui/material';
 
 const Messages = () => {
   return (

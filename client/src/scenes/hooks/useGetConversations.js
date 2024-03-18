@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { selectToken } from "state/authSlice";
 import toast from "react-hot-toast";
 
 const useGetConversations = () => {
 	const [loading, setLoading] = useState(false);
 	const [conversations, setConversations] = useState([]);
+	const token = useSelector(selectToken);
 
 	useEffect(() => {
 		const getConversations = async () => {
