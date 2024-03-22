@@ -78,7 +78,6 @@ const Form = () => {
               token: loggedIn.token,
             })
           );
-          console.log('Token:', loggedIn.token); // Log the token
           navigate("/home");
         }
       } else {

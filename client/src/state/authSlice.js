@@ -6,8 +6,6 @@ const initialState = {
   user: null,
   token: null,
   posts: [],
-  selectedConversation: null,
-  messages: [],
 };
 
 // authSlice with reducers and extraReducers
@@ -42,12 +40,6 @@ export const authSlice = createSlice({
         return post;
       });
       state.posts = updatedPosts;
-    },
-    setSelectedConversation: (state, action) => {
-      state.selectedConversation = action.payload;
-    },
-    setMessages: (state, action) => {
-      state.messages = action.payload;
     },
   },
 });
